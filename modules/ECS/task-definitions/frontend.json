@@ -1,0 +1,23 @@
+[
+  {
+    "name": "${project}",
+    "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${frontend_ecr_repo}:${frontend_image_tag}",
+    "memoryReservation": ${frontend_memory},
+    "cpu": ${frontned_cpu},
+    "privileged": false,
+    "portMappings": [
+    {
+      "containerPort" : ${frontend_container_port},
+      "protocol": "tcp"
+    }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${cloudwatch_logs_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
+  }
+]

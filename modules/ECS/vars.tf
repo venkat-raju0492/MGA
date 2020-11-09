@@ -39,12 +39,12 @@ variable "frontend_container_port" {
   description = "frontend container port"
 }
 
-variable "ecs_task_family_name" {
-  description = "ecs task definition family name"
-}
-
 variable "ecs_frontend_role_arn" {
   description = "ecs task definition iam role arn for frontend"
+}
+
+variable "ecs_frontend_desired_count" {
+  description = "ecs frontend desired no. of containers"
 }
 
 variable "ecs_backend_role_arn" {
@@ -86,6 +86,10 @@ variable "backend_cpu" {
 
 variable "backend_container_port" {
   description = "backend container port"
+}
+
+variable "ecs_backend_desired_count" {
+  description = "ecs backend desired no. of containers"
 }
 
 variable "ecs_backend_scheduling_strategy" {

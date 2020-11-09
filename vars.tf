@@ -43,10 +43,6 @@ variable "frontend_container_port" {
   description = "frontend container port"
 }
 
-variable "ecs_task_family_name" {
-  description = "ecs task family name"
-}
-
 variable "ecs_launch_type" {
   description = "ecs launch type"
 }
@@ -82,4 +78,12 @@ variable "backend_container_port" {
 
 variable "ecs_backend_scheduling_strategy" {
   description = "ecs backend scheduling strategy"
+}
+
+variable "ecs_frontend_desired_count" {
+  description = "ecs frontend desired no. of containers"
+}
+
+variable "ecs_backend_desired_count" {
+  description = "ecs abckend desired no. of containers"
 }

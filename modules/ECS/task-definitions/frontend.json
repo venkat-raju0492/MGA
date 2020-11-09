@@ -3,7 +3,7 @@
     "name": "${project}",
     "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${frontend_ecr_repo}:${frontend_image_tag}",
     "memoryReservation": ${frontend_memory},
-    "cpu": ${frontned_cpu},
+    "cpu": ${frontend_cpu},
     "privileged": false,
     "portMappings": [
     {

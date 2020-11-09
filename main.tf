@@ -1,3 +1,7 @@
+terraform {
+  backend "s3" {}
+}
+
 provider "aws" {
   region = var.region
 }
@@ -34,7 +38,8 @@ module "ECS" {
   frontend_memory                  = var.frontend_memory
   frontend_cpu                     = var.frontend_cpu
   frontend_container_port          = var.frontend_container_port
-  ecs_task_family_name             = var.ecs_task_family_name
+  ecs_frontend_desired_count       = var.ecs_frontend_desired_count
+  ecs_backend_desired_count        = var.ecs_backend_desired_count
   ecs_frontend_role_arn            = module.security.frontend_role_arn
   ecs_launch_type                  = var.ecs_launch_type
   ecs_backend_role_arn             = module.security.backend_role_arn

@@ -23,6 +23,26 @@ variable "backend_allowed_cidrs" {
   description = "backend allowed cidrs"
 }
 
+variable "frontend_lb_allowed_cidrs" {
+  description = "frontend load balancer allowed cidrs"
+}
+
+variable "deregistration_delay" {
+  description = "load balancer deregistration delays"
+}
+
+variable "health_check_path" {
+  description = "load balancer health check path"
+}
+
+variable "public_subnet_ids" {
+  description = "public subnet ids"
+}
+
+variable "certificate_arn_no" {
+  description = "certificate arn no for load balancer"
+}
+
 variable "frontend_ecr_repo" {
   description = "frontend ecr repo"
 }
@@ -85,5 +105,5 @@ variable "ecs_frontend_desired_count" {
 }
 
 variable "ecs_backend_desired_count" {
-  description = "ecs abckend desired no. of containers"
+  description = "ecs backend desired no. of containers"
 }

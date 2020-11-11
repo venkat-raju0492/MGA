@@ -44,6 +44,36 @@ resource "aws_security_group" "ecs_backend_sg" {
   ))
 }
 
+resource "aws_security_group" "frontend-lb-sg" {
+  name = "${var.project}-frontend-lb-sg-${var.environment}"
+  vpc_id = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = var.frontend_lb_allowed_cidrs
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = var.frontend_lb_allowed_cidrs
+  }
+
+  tags = merge(var.common_tags, map(
+    "Name", "${var.project}-ecs-backend-sg-${var.environment}"
+  ))
+}
+
 resource "aws_iam_role" "ecs_frontend_task_role" {
   name = "${var.project}-ecs-frontend-role-${var.environment}"
 
@@ -93,3 +123,4 @@ EOF
     "Name", "${var.project}-ecs-backend-role-${var.environment}"
   ))
 }
+

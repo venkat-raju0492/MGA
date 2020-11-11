@@ -1,0 +1,83 @@
+pipeline {
+
+  agent { label "${agent_name}" }
+
+  /*
+   Jenkins job for redis clear cache using AWS infra
+    Expected Jenkins variables:
+    agent_name: jenkins slave name
+    environment: Environment name
+    bucket: S3 Bucket name to hold terraform state file
+  */
+
+  environment {
+    project = "MGA"
+    s3_key = "${project}/${environment}/${project}-${environment}.tfstat"
+    project_dir = "project_onboarding/${project}/"
+    tf_plan_file = ".terraform/latest-plan"
+    tf_override_vars = ""
+    tf_vars_file = "${environment}.tfvars"
+    tf_command = "terraform"
+  }
+
+  stages {
+
+    stage('TF clean') {
+      steps {
+        dir(project_dir) {
+          sh 'rm -rf .terraform'
+        }
+      }
+    }
+
+    stage('TF Install') {
+      steps {
+        dir(project_dir) {
+          sh 'tfenv install'
+        }
+      }
+    }
+
+    stage('TF Init') {
+      steps {
+        dir(project_dir) {
+          sh '${tf_command} init \
+            -backend-config="bucket=${bucket}" \
+            -backend-config="key=${s3_key}" \
+            -backend-config="region=${region}" \
+            -backend=true \
+            -force-copy \
+            -get=true \
+            -input=false'
+        }
+      }
+    }
+
+    stage('TF Plan') {
+      steps {
+        dir(project_dir) {
+          sh '${tf_command} plan -var-file="${tf_vars_file}" ${tf_override_vars} -out ${tf_plan_file}'
+        }
+      }
+    }
+
+    stage('Approval') {
+      when {
+        expression { params.approval_needed == 'yes' }
+      }
+      steps {
+        script {
+          def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+        }
+      }
+    }
+
+    stage('TF Apply') {
+      steps {
+        dir(project_dir) {
+          sh '${tf_command} apply --input=false ${tf_plan_file}'
+        }
+      }
+    }
+  }
+}

@@ -18,6 +18,11 @@ variable "backend_allowed_cidrs" {
   description = "backend allowed cidrs for ecs service"
 }
 
+variable "frontend_lb_allowed_cidrs" {
+  description = "frontend load balancer allowed cidrs"
+  type = list
+}
+
 variable "common_tags" {
   description = "common tags for all resources"
   type = map

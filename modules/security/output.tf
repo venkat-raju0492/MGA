@@ -13,3 +13,7 @@ output "frontend_role_arn" {
 output "backend_role_arn" {
   value = aws_iam_role.ecs_backend_task_role.arn
 }
+
+output "frontend_lb_sg_id" {
+  value = aws_security_group.frontend-lb-sg.id
+}

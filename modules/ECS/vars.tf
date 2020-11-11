@@ -59,6 +59,10 @@ variable "ecs_frontend_scheduling_strategy" {
   description = "ecs frontend service scheduling strategy"
 }
 
+variable "frontend_lb_target_group_arn" {
+  description = "frontend lb target group arn"
+}
+
 variable "frontend_security_group" {
   description = "frontend servide security group id"
 }

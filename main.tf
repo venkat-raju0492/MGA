@@ -10,20 +10,36 @@ data "aws_caller_identity" "current" {}
 
 locals {
   common_tags = {
-    Project = var.project
+    Project     = var.project
     Environment = var.environment
-    CreatedBy = "Terraform"
+    CreatedBy   = "Terraform"
   }
 }
 
 module "security" {
-  source                 = "./modules/security/"
-  project                = var.project
-  environment            = var.environment
-  vpc_id                 = var.vpc_id
-  frontend_allowed_cidrs = var.frontend_allowed_cidrs
-  backend_allowed_cidrs  = var.backend_allowed_cidrs
-  common_tags            = local.common_tags
+  source                    = "./modules/security/"
+  project                   = var.project
+  environment               = var.environment
+  vpc_id                    = var.vpc_id
+  frontend_allowed_cidrs    = var.frontend_allowed_cidrs
+  backend_allowed_cidrs     = var.backend_allowed_cidrs
+  frontend_lb_allowed_cidrs = var.frontend_lb_allowed_cidrs
+  common_tags               = local.common_tags
+}
+
+module "LoadBalancer" {
+  source                    = "./modules/LoadBalancer/"
+  project                   = var.project
+  environment               = var.environment
+  vpc_id                    = var.vpc_id
+  frontend_lb_sg_id         = [module.security.frontend_lb_sg_id]
+  deregistration_delay      = var.deregistration_delay
+  health_check_path         = var.health_check_path
+  public_subnet_ids         = var.public_subnet_ids
+  region                    = var.region
+  account_id                = data.aws_caller_identity.current.id
+  certificate_arn_no        = var.certificate_arn_no
+  common_tags               = local.common_tags
 }
 
 module "ECS" {
@@ -43,6 +59,7 @@ module "ECS" {
   ecs_frontend_role_arn            = module.security.frontend_role_arn
   ecs_launch_type                  = var.ecs_launch_type
   ecs_backend_role_arn             = module.security.backend_role_arn
+  frontend_lb_target_group_arn     = module.LoadBalancer.alb_target_group_arn
   ecs_frontend_scheduling_strategy = var.ecs_frontend_scheduling_strategy
   frontend_security_group          = module.security.frontend_sg_id
   private_subnet_ids               = var.private_subnet_ids

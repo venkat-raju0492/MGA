@@ -78,3 +78,10 @@ module "ECS" {
   ecs_backend_scheduling_strategy  = var.ecs_backend_scheduling_strategy
   backend_security_group           = module.security.backend_sg_id
 }
+
+module "API-Gateway" {
+  source                           = "./modules/API-Gateway/"
+  project                          = var.project
+  environment                      = var.environment
+  common_tags                      = local.common_tags
+}

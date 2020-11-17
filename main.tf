@@ -49,6 +49,7 @@ module "ECS" {
   account_id                       = data.aws_caller_identity.current.id
   common_tags                      = local.common_tags
   region                           = var.region
+  frontend_lb_target_group_arn       = module.LoadBalancer.alb_target_group_arn
   frontend_ecr_repo                = var.frontend_ecr_repo
   frontend_image_tag               = var.frontend_image_tag
   frontend_memory                  = var.frontend_memory
@@ -59,7 +60,6 @@ module "ECS" {
   ecs_frontend_role_arn            = module.security.frontend_role_arn
   ecs_launch_type                  = var.ecs_launch_type
   ecs_backend_role_arn             = module.security.backend_role_arn
-  frontend_lb_target_group_arn     = module.LoadBalancer.alb_target_group_arn
   ecs_frontend_scheduling_strategy = var.ecs_frontend_scheduling_strategy
   frontend_security_group          = module.security.frontend_sg_id
   private_subnet_ids               = var.private_subnet_ids

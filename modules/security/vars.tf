@@ -9,7 +9,6 @@ variable "environment" {
 variable "vpc_id" {
   description = "aws vps id"
 }
-
 variable "frontend_allowed_cidrs" {
   description = "frontend allowed cidrs for ecs service"
 }

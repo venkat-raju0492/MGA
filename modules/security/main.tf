@@ -70,7 +70,7 @@ resource "aws_security_group" "frontend-lb-sg" {
   }
 
   tags = merge(var.common_tags, map(
-    "Name", "${var.project}-ecs-backend-sg-${var.environment}"
+    "Name", "${var.project}-ecs-frontend-lb-sg-${var.environment}"
   ))
 }
 

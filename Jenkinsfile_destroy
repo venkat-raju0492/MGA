@@ -72,7 +72,7 @@ pipeline {
       }
     }
 
-    stage('TF Apply') {
+    stage('TF Destroy') {
       steps {
         dir(project_dir) {
           sh '${tf_command} destroy -var-file="${tf_vars_file}" -auto-approve'

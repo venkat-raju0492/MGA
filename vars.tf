@@ -14,6 +14,11 @@ variable "vpc_id" {
   description = "aws vpc id"
 }
 
+variable "frontend_lb_allowed_cidrs" {
+  description = "frontend lb allowed cidrs"
+  type = list
+}
+
 variable "frontend_allowed_cidrs" {
   description = "frontend allowed cidrs "
   type = list
@@ -21,10 +26,6 @@ variable "frontend_allowed_cidrs" {
 
 variable "backend_allowed_cidrs" {
   description = "backend allowed cidrs"
-}
-
-variable "frontend_lb_allowed_cidrs" {
-  description = "frontend load balancer allowed cidrs"
 }
 
 variable "deregistration_delay" {

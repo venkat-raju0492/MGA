@@ -51,7 +51,7 @@
     tags = merge(
       var.common_tags,
       {
-        "Name" = "${var.project}-ecs_frontend_task_definition-${var.environment}"
+        "Name" = "${var.project}-ecs-frontend-task-definition-${var.environment}"
       },
     )
   }
@@ -64,16 +64,16 @@
     scheduling_strategy = var.ecs_frontend_scheduling_strategy
     desired_count       = var.ecs_frontend_desired_count
 
-    load_balancer {
-      target_group_arn = var.frontend_lb_target_group_arn
-      container_name = var.project
-      container_port = var.frontend_container_port
-    }
-
     network_configuration {
       security_groups  = [var.frontend_security_group]
       subnets          = var.private_subnet_ids
       assign_public_ip = false
+    }
+
+    load_balancer {
+      target_group_arn = var.frontend_lb_target_group_arn
+      container_name = var.project
+      container_port = var.frontend_container_port
     }
 
     lifecycle {
@@ -106,7 +106,6 @@
       backend_cpu = var.backend_cpu
       backend_container_port = var.backend_container_port
       cloudwatch_logs_group = aws_cloudwatch_log_group.backned_log_group.name
-
     }
   }
 
@@ -123,7 +122,7 @@
     tags = merge(
     var.common_tags,
     {
-      "Name" = "${var.project}-ecs_backend_task_definition-${var.environment}"
+      "Name" = "${var.project}-ecs-backend-task-definition-${var.environment}"
     },
     )
   }

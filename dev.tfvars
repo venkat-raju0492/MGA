@@ -5,6 +5,7 @@ vpc_id = ""
 frontend_allowed_cidrs = []
 backend_allowed_cidrs = []
 frontend_lb_allowed_cidrs = []
+waf_cidr_allowlist = []
 deregistration_delay = ""
 health_check_path = ""
 public_subnet_ids = []

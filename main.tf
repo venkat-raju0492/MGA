@@ -27,6 +27,13 @@ module "security" {
   common_tags               = local.common_tags
 }
 
+module "WAF" {
+  source                    = "./modules/WAF/"
+  project                   = var.project
+  environment               = var.environment
+  waf_cidr_allowlist        = var.waf_cidr_allowlist
+}
+
 module "LoadBalancer" {
   source                    = "./modules/LoadBalancer/"
   project                   = var.project

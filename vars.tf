@@ -28,6 +28,11 @@ variable "backend_allowed_cidrs" {
   description = "backend allowed cidrs"
 }
 
+variable "waf_cidr_allowlist" {
+  description = "waf allowed list cidr"
+  type = list
+}
+
 variable "deregistration_delay" {
   description = "load balancer deregistration delays"
 }

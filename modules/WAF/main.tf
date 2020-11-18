@@ -20,8 +20,8 @@ resource "aws_waf_web_acl" "waf_acl" {
   }
 
   depends_on = [
-    "aws_waf_rule.ip_allowlist",
-    "aws_waf_ipset.ip_allowlist"
+    aws_waf_rule.ip_allowlist,
+    aws_waf_ipset.ip_allowlist
   ]
 }
 

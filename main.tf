@@ -1,3 +1,7 @@
+terraform {
+  backend "s3" {}
+}
+
 provider "aws" {
   region = var.region
 }
@@ -5,6 +9,12 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 locals {
+  cloudfront_origin_access_identity = "access-identity-${var.project}-static-s3-${var.environment}.s3.amazonaws.com"
+  fqdn = "S3-${var.project}-static-s3-${var.environment}"
+  cname = ["${var.project}-static-s3-${var.environment}.${var.domain_name}"]
+  s3bucket_domain_name = "${var.project}-static-s3-${var.environment}.s3.amazonaws.com"
+  account_id = data.aws_caller_identity.current.account_id
+  cert_arn = "arn:aws:acm:us-east-1:${local.account_id}:certificate/${var.cf_certificate_arn_no}"
   common_tags = {
     Project     = var.project
     Environment = var.environment
@@ -30,6 +40,33 @@ module "WAF" {
   waf_cidr_allowlist        = var.waf_cidr_allowlist
 }
 
+module "cloudfront" {
+  source                            = "./modules/CloudFront/"
+  bucket_regional_domain_name       = local.s3bucket_domain_name
+  cloudfront_origin_access_identity = local.cloudfront_origin_access_identity
+  fqdn                              = local.fqdn
+  common_tags                       = local.common_tags
+  project                           = var.project
+  environment                       = var.environment
+  cloudfront_default_certificate    = false
+  aliases                           = local.cname
+  cert_arn                          = local.cert_arn
+  ssl_method                        = var.ssl_method
+  protocol_version                  = var.protocol_version
+  allow_methods                     = var.allow_methods
+  cache_methods                     = var.cache_methods
+  waf_acl_id                        = module.WAF.waf_acl_id
+}
+
+module "static-s3" {
+  source                            = "./modules/S3/"
+  environment                       = var.environment
+  project                           = var.project
+  s3_bucket                         = "static-s3"
+  common_tags                       = local.common_tags
+  expiration_days                   = var.static_s3_expiration_days
+}
+
 module "LoadBalancer" {
   source                    = "./modules/LoadBalancer/"
   project                   = var.project
@@ -52,7 +89,7 @@ module "ECS" {
   account_id                       = data.aws_caller_identity.current.id
   common_tags                      = local.common_tags
   region                           = var.region
-  frontend_lb_target_group_arn       = module.LoadBalancer.alb_target_group_arn
+  frontend_lb_target_group_arn     = module.LoadBalancer.alb_target_group_arn
   frontend_ecr_repo                = var.frontend_ecr_repo
   frontend_image_tag               = var.frontend_image_tag
   frontend_memory                  = var.frontend_memory
